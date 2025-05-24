@@ -12,8 +12,14 @@
  * 5. Constants and configuration
  */
 
+// Fonts
+import { Geist } from 'next/font/google';
+export const geistSans = Geist({
+  display: 'swap',
+  subsets: ['latin'],
+});
+
 // External Libraries
-export { Geist } from 'next/font/google';
 export { ThemeProvider } from 'next-themes';
 export { default as Link } from 'next/link';
 
