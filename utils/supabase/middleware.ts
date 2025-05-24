@@ -39,14 +39,25 @@ export const updateSession = async (request: NextRequest) => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
 
-    // protected routes
-    if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
+    // Define Protected Routes
+    const protectedRoutes = [
+      '/profile',
+      '/wishlist',
+      '/protected'
+    ];
+
+    // Check if request or current path is protected (Boolean)
+    const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+
+    // Redirect to sign-in if user is not authenticated and trying to access protected routes
+    if (isProtectedRoute && user.error) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
 
-    if (request.nextUrl.pathname === "/" && !user.error) {
-      return NextResponse.redirect(new URL("/protected", request.url));
-    }
+    // ! Remove Auto Redirect for Landing Page ("/" to "/protected")
+    // if (request.nextUrl.pathname === "/" && !user.error) {
+    //   return NextResponse.redirect(new URL("/protected", request.url));
+    // }
 
     return response;
   } catch (e) {
