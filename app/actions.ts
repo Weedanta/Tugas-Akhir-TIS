@@ -132,3 +132,26 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+export const signInWithGithub = async (formData: FormData) => {
+    const supabase = await createClient();
+    const origin = (await headers()).get("origin");
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+            redirectTo: `${origin}/auth/callback`,
+        },
+    });
+
+    if (error) {
+        console.error(error.message);
+        return encodedRedirect("error", "/sign-in", error.message);
+    }
+    
+    if (data.url) {
+        return redirect(data.url);
+    }
+
+    return encodedRedirect("error", "/sign-in", "No URL returned from GitHub sign-in");
+};
