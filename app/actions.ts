@@ -8,8 +8,7 @@ import { redirect } from "next/navigation";
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const { supabase, origin } = await getAuthContext();
 
   if (!email || !password) {
     return encodedRedirect(
@@ -58,8 +57,7 @@ export const signInAction = async (formData: FormData) => {
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const { supabase, origin } = await getAuthContext();
   const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!email) {
@@ -134,8 +132,7 @@ export const signOutAction = async () => {
 };
 
 export const signInWithGithub = async (formData: FormData) => {
-    const supabase = await createClient();
-    const origin = (await headers()).get("origin");
+  const { supabase, origin } = await getAuthContext();
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "github",
@@ -154,4 +151,32 @@ export const signInWithGithub = async (formData: FormData) => {
     }
 
     return encodedRedirect("error", "/sign-in", "No URL returned from GitHub sign-in");
+};
+
+export const signInWithGoogle = async (formData: FormData) => {
+    const { supabase, origin } = await getAuthContext();
+    
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      console.error(error.message);
+      return encodedRedirect("error", "/sign-in", error.message);
+    }
+    
+    if (data.url) {
+      return redirect(data.url);
+    }
+
+    return encodedRedirect("error", "/sign-in", "No URL returned from Google sign-in");
+}
+
+const getAuthContext = async () => {
+  const origin = (await headers()).get('origin') || process.env.NEXT_PUBLIC_SITE_URL;
+  const supabase = await createClient();
+  return { supabase, origin };
 };
