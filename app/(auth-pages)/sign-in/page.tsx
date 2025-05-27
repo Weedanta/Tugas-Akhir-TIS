@@ -9,6 +9,11 @@ import { CircularButton } from "@/components/circular-button";
 import { TbBrandGithubFilled } from "react-icons/tb";
 import { TbBrandGoogleFilled } from "react-icons/tb";
 
+export const metadata = {
+  title: "Sign In",
+  description: "Sign In",
+};
+
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
 

@@ -16,7 +16,10 @@ const { utils: { hasEnvVars } } = supabase;
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Space-TIS",
+  title: {
+    template: "%s | Space-TIS",
+    default: "Space-TIS",
+  },
   description: "Tugas Akhir Teknologi Integrasi Sistem Bertema Space",
 };
 
