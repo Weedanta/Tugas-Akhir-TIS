@@ -16,8 +16,8 @@ const { utils: { hasEnvVars } } = supabase;
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Space-TIS",
+  description: "Tugas Akhir Teknologi Integrasi Sistem Bertema Space",
 };
 
 export default function RootLayout({
@@ -39,15 +39,15 @@ export default function RootLayout({
               <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
                   <div className="flex gap-5 items-center font-semibold">
-                    <Link href={"/"}>Next.js Supabase Starter</Link>
-                    <div className="flex items-center gap-2">
+                    <Link href={"/"}>Space-TIS</Link>
+                    {/* <div className="flex items-center gap-2">
                       <DeployButton />
-                    </div>
+                    </div> */}
                   </div>
                   {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
                 </div>
               </nav>
-              <div className="flex flex-col gap-20 max-w-5xl p-5">
+              <div className="flex w-full flex-col gap-5 p-5">
                 {children}
               </div>
 
