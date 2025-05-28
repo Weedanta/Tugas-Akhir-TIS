@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
+import checkIdentity from "./action";
 
 export async function GET(request: Request) {
   // The `/auth/callback` route is required for the server-side auth flow implemented
@@ -13,6 +14,7 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
+    await checkIdentity();
   }
 
   if (redirectTo) {

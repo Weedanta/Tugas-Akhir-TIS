@@ -145,7 +145,7 @@ export const signInWithGithub = async (formData: FormData) => {
         console.error(error.message);
         return encodedRedirect("error", "/sign-in", error.message);
     }
-    
+
     if (data.url) {
         return redirect(data.url);
     }
@@ -175,7 +175,7 @@ export const signInWithGoogle = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", "No URL returned from Google sign-in");
 }
 
-const getAuthContext = async () => {
+export const getAuthContext = async () => {
   const origin = (await headers()).get('origin') || process.env.NEXT_PUBLIC_SITE_URL;
   const supabase = await createClient();
   return { supabase, origin };

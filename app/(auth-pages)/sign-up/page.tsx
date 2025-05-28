@@ -4,6 +4,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import ProviderSignInButtons from "@/components/provider-sign-in-buttons";
 // import { SmtpMessage } from "../smtp-message";
 
 export const metadata = {
@@ -50,6 +51,7 @@ export default async function Signup(props: {
           <FormMessage message={searchParams} />
         </div>
       </form>
+      <ProviderSignInButtons />
       {/* <SmtpMessage /> */}
     </>
   );
