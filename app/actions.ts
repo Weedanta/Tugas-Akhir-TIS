@@ -32,8 +32,8 @@ export const signUpAction = async (formData: FormData) => {
   } else {
     return encodedRedirect(
       "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
+      "/protected",
+      "Thanks for signing up! Welcome to Space-TIS",
     );
   }
 };

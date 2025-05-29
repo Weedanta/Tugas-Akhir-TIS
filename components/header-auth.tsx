@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { createClient } from "@/utils/supabase/server";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { IoIosMenu } from "react-icons/io";
 
 export default async function AuthButton() {
   const supabase = await createClient();
@@ -64,11 +66,19 @@ export default async function AuthButton() {
   return user ? (
     <div className="flex items-center gap-4">
       <Link className="hover:underline" href="/profile">Hey, {profile?.username || user.email}!</Link>
-      <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
-          Sign out
-        </Button>
-      </form>
+      <DropdownMenu>
+      <DropdownMenuTrigger className="p-2 border rounded-md hover:bg-accent">
+          <IoIosMenu className="aspect-square h-full" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>        
+        <DropdownMenuItem asChild><Link href="/profile">Profile</Link></DropdownMenuItem>
+        { profile?.status == "admin" && (
+          <DropdownMenuItem asChild><Link href="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild><form onClick={signOutAction} className="text-red-600">Sign out</form></DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
     </div>
   ) : (
     <div className="flex gap-2">

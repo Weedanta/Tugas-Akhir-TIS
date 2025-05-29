@@ -25,22 +25,35 @@ export default async function Profile() {
 
     return (
         <div className="flex-1 w-full flex flex-col gap-12">
-            {/* <div className="w-full">
-                <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-                <InfoIcon size="16" strokeWidth={2} />
-                This is a protected page that you can only see as an authenticated
-                user
-                </div>
-            </div> */}
             <div className="flex flex-col gap-2 items-center">
-                <img className="border-2 border-foreground rounded-full w-40 h-40 aspect-square" src={data.profile_url} />
-                <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-                {/* <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-                {JSON.stringify(user, null, 2)}
-                </pre> */}
+                { data.profile_url ? (
+                    <img className="border-2 border-foreground rounded-full w-40 h-40 aspect-square" src={data.profile_url} />
+                ) : (
+                    <div className="border-2 border-foreground rounded-full w-40 h-40 aspect-square flex items-center justify-center">
+                        {data.username ? (
+                            <p className="text-5xl font-bold">
+                                {data.username
+                                    .split(" ")
+                                    .map((name: string) => name[0])
+                                    .slice(0, 2)
+                                    .join("")}
+                            </p>
+                        ) : (
+                            <p className="text-5xl font-bold">
+                                {user.email
+                                    ?.split("@")[0]
+                                    .split("")
+                                    .map((name: string) => name[0])
+                                    .slice(0, 1)
+                                    .join("")
+                                    .toUpperCase()}
+                            </p>
+                        )}
+                    </div>
+                )}
                 {/* Fetch details from supabase's public.profile */}
                 <p>{data.id}</p>
-                <p>{data.username}</p>
+                <p>{data.username || user.email}</p>
                 <p>{data.birthdate}</p>
             </div>
         </div>
