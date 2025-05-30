@@ -14,6 +14,7 @@
     "@splinetool/viewer": "^1.9.98",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@types/three": "^0.176.0",
     "autoprefixer": "10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -26,7 +27,8 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-icons": "^5.5.0",
-    "sonner": "^2.0.3"
+    "sonner": "^2.0.3",
+    "three": "^0.176.0"
   },
   "devDependencies": {
     "@types/node": "22.10.2",
