@@ -18,29 +18,29 @@ export default async function Gallery() {
         <div className="flex flex-col border rounded-md p-4 gap-3">
             <h1 className="text-2xl font-medium">Gallery</h1>
             <p className="text-sm text-muted-foreground">See All Available Astronomy Picture of The Day from NASA</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border py-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border p-10 rounded-lg">
                 {data?.map((entry, index) => (
                     <Link 
                         key={entry.id}
                         href={`/gallery/${entry.id}`}
-                        className="block w-full"
+                        className="flex w-full"
                     >
                         <Card key={index} className="flex flex-col w-full hover:scale-105 transition-transform cursor-pointer">
-                            <CardHeader>
+                            <CardHeader className="flex flex-col basis-2/10">
                                 <CardTitle>{entry.title}</CardTitle>
                                 <CardDescription>{entry.date}</CardDescription>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="p-5 flex items-center justify-center overflow-hidden basis-6/10">
                                 { entry.url ? (
-                                    <img src={entry.url} alt={entry.title} className="aspect-square object-cover w-full rounded-md" />
+                                    <img src={entry.url} alt={entry.title} className="aspect-square object-cover w-full h-full" />
                                 ) : (
                                     <div className="flex items-center justify-center w-full h-full text-muted-foreground rounded-md">
                                         <p>No Image Available</p>
                                     </div>
                                 )}
                             </CardContent>
-                            <CardFooter>
-                                <p className="text-xs text-muted-foreground">{entry.copyright}</p>    
+                            <CardFooter className="pb-3 flex items-end basis-2/10">
+                                <p className="text-xs text-muted-foreground">{entry.copyright || 'NASA'}</p>    
                             </CardFooter>
                         </Card>
                     </Link>

@@ -50,7 +50,7 @@ export default function RootLayout({
                 {children}
               </div>
 
-              <footer className="sticky bottom-0 border w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-4">
+              <footer className="sticky bottom-0 border w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-4 bg-background">
                 <p>
                   Powered by{" "}
                   <a
