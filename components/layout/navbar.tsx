@@ -1,11 +1,11 @@
+// components/layout/navbar-client-auth.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Rocket, User, LogOut, Settings } from 'lucide-react';
-import { signOutAction } from '@/app/actions';
+import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,15 +15,30 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-interface NavbarClientProps {
-  user?: any;
-  profile?: any;
-  hasEnvVars?: boolean;
+// Type definitions
+interface User {
+  id: string;
+  email?: string;
+  [key: string]: any;
 }
 
-const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+interface Profile {
+  id: string;
+  username?: string;
+  profile_url?: string;
+  status?: string;
+  birthdate?: string;
+  [key: string]: any;
+}
+
+const NavbarClientAuth: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const supabase = createClient();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +49,70 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Get current user
+        const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
+        
+        console.log('NavbarAuth: Current user:', currentUser ? 'Found' : 'None', userError);
+        
+        if (currentUser) {
+          setUser(currentUser);
+          
+          // Get profile
+          const { data: profileData, error: profileError } = await supabase
+            .from('profile')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+            
+          console.log('NavbarAuth: Profile data:', profileData ? 'Found' : 'None', profileError);
+          
+          if (profileData) {
+            setProfile(profileData);
+          }
+        }
+      } catch (error) {
+        console.error('NavbarAuth: Client auth error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('NavbarAuth: Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
+      
+      if (session?.user) {
+        setUser(session.user);
+        
+        // Get profile for new user
+        const { data: profileData } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+          
+        if (profileData) {
+          setProfile(profileData);
+        }
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -42,91 +121,68 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
     setIsMenuOpen(false);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setProfile(null);
+      closeMenu();
+    } catch (error) {
+      console.error('NavbarAuth: Sign out error:', error);
+    }
+  };
+
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About NASA' },
     { href: '/daily-facts', label: 'Daily Facts' },
-    { href: '/missions', label: 'Missions' },
     { href: '/gallery', label: 'Gallery' },
-    { href: '/contact', label: 'Contact' }
   ];
 
-  const handleSignOut = async () => {
-    try {
-      await signOutAction();
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
-
   const renderAuthSection = () => {
-    if (!hasEnvVars) {
+    if (isLoading) {
       return (
         <div className="flex gap-2 items-center">
-          <Badge variant="destructive" className="hidden md:block text-xs">
-            Setup Required
-          </Badge>
-          <Button
-            size="sm"
-            variant="outline"
-            disabled
-            className="opacity-75 cursor-not-allowed text-gray-400 border-gray-600"
-          >
-            Sign in
-          </Button>
+          <div className="w-8 h-8 rounded-full bg-muted animate-pulse"></div>
         </div>
       );
     }
 
     return user ? (
       <div className="flex items-center gap-2 md:gap-4">
-        {/* User greeting - hidden on mobile */}
-        <span className="hidden md:block text-gray-300 text-sm">
-          Hey, {profile?.username || user.email?.split('@')[0]}!
-        </span>
-
-        {/* User avatar/initial */}
-        <div className="flex items-center">
-          {profile?.profile_url ? (
-            <img 
-              src={profile.profile_url} 
-              alt="Profile"
-              className="w-8 h-8 rounded-full border-2 border-blue-400"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
-              {profile?.username 
-                ? profile.username.charAt(0).toUpperCase()
-                : user.email?.charAt(0).toUpperCase()
-              }
-            </div>
-          )}
-        </div>
-
-        {/* Dropdown Menu */}
+        {/* User avatar/initial dengan dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-gray-300 hover:text-white hover:bg-gray-700 p-2"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
+            <button className="flex items-center hover:opacity-80 transition-opacity">
+              {profile?.profile_url ? (
+                <img 
+                  src={profile.profile_url} 
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full border-2 border-primary object-cover cursor-pointer"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold cursor-pointer">
+                  {profile?.username 
+                    ? profile.username.charAt(0).toUpperCase()
+                    : user.email?.charAt(0).toUpperCase()
+                  }
+                </div>
+              )}
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent 
             align="end" 
-            className="w-56 bg-gray-800 border-gray-700 text-gray-100"
+            className="w-56"
           >
-            <DropdownMenuLabel className="text-gray-300">
+            <DropdownMenuLabel>
               My Account
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-gray-700" />
+            <DropdownMenuSeparator />
             
             <DropdownMenuItem asChild>
               <Link 
                 href="/profile" 
-                className="flex items-center gap-2 text-gray-300 hover:text-white hover:bg-gray-700 cursor-pointer"
+                className="flex items-center gap-2 cursor-pointer"
               >
                 <User className="h-4 w-4" />
                 Profile
@@ -137,7 +193,7 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
               <DropdownMenuItem asChild>
                 <Link 
                   href="/admin/dashboard"
-                  className="flex items-center gap-2 text-gray-300 hover:text-white hover:bg-gray-700 cursor-pointer"
+                  className="flex items-center gap-2 cursor-pointer"
                 >
                   <Settings className="h-4 w-4" />
                   Dashboard
@@ -145,12 +201,12 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
               </DropdownMenuItem>
             )}
 
-            <DropdownMenuSeparator className="bg-gray-700" />
+            <DropdownMenuSeparator />
             
             <DropdownMenuItem>
               <button 
                 onClick={handleSignOut}
-                className="flex items-center gap-2 text-red-400 hover:text-red-300 w-full text-left"
+                className="flex items-center gap-2 text-destructive hover:text-destructive/80 w-full text-left"
               >
                 <LogOut className="h-4 w-4" />
                 Sign out
@@ -161,10 +217,10 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
       </div>
     ) : (
       <div className="flex gap-2">
-        <Button asChild size="sm" variant="outline" className="border-gray-600 text-gray-300 hover:text-white hover:bg-gray-700">
+        <Button asChild size="sm" variant="outline">
           <Link href="/sign-in">Sign in</Link>
         </Button>
-        <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button asChild size="sm">
           <Link href="/sign-up">Sign up</Link>
         </Button>
       </div>
@@ -173,16 +229,18 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-black/95 backdrop-blur-md shadow-lg' : 'bg-black/80'
+      isScrolled 
+        ? 'bg-background/95 backdrop-blur-md shadow-lg border-b border-border' 
+        : 'bg-background/80'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center space-x-2 text-white hover:text-blue-400 transition-colors duration-200"
+            className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors duration-200"
           >
-            <Rocket className="h-8 w-8 text-blue-400" />
+            <Rocket className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
               NASA Facts
             </span>
@@ -195,10 +253,10 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-gray-300 hover:text-white hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 relative group"
+                  className="text-muted-foreground hover:text-foreground hover:bg-accent px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 relative group"
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
                 </Link>
               ))}
             </div>
@@ -209,9 +267,11 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
-            {/* Mobile Auth - Show only avatar or sign in button */}
+            {/* Mobile Auth */}
             <div className="md:hidden">
-              {user ? (
+              {isLoading ? (
+                <div className="w-8 h-8 rounded-full bg-muted animate-pulse"></div>
+              ) : user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="p-1">
@@ -219,7 +279,7 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
                         <img 
                           src={profile.profile_url} 
                           alt="Profile"
-                          className="w-8 h-8 rounded-full border-2 border-blue-400"
+                          className="w-8 h-8 rounded-full border-2 border-primary object-cover"
                         />
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
@@ -231,30 +291,30 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
                       )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-gray-800 border-gray-700 text-gray-100">
-                    <DropdownMenuLabel className="text-gray-300">
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
                       {profile?.username || user.email?.split('@')[0]}
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-gray-700" />
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile" className="text-gray-300 hover:text-white">
+                      <Link href="/profile">
                         <User className="h-4 w-4 mr-2" />
                         Profile
                       </Link>
                     </DropdownMenuItem>
                     {profile?.status === "admin" && (
                       <DropdownMenuItem asChild>
-                        <Link href="/admin/dashboard" className="text-gray-300 hover:text-white">
+                        <Link href="/admin/dashboard">
                           <Settings className="h-4 w-4 mr-2" />
                           Dashboard
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuSeparator className="bg-gray-700" />
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem>
                       <button 
                         onClick={handleSignOut}
-                        className="flex items-center text-red-400 hover:text-red-300 w-full text-left"
+                        className="flex items-center text-destructive hover:text-destructive/80 w-full text-left"
                       >
                         <LogOut className="h-4 w-4 mr-2" />
                         Sign out
@@ -263,16 +323,17 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button asChild size="sm">
                   <Link href="/sign-in">Sign in</Link>
                 </Button>
               )}
             </div>
 
-            <button
+            <Button
               onClick={toggleMenu}
-              className="bg-gray-700 text-gray-400 hover:text-white hover:bg-gray-600 p-2 rounded-md transition-colors duration-200"
-              aria-expanded="false"
+              variant="ghost"
+              size="sm"
+              className="p-2"
             >
               <span className="sr-only">Open main menu</span>
               {isMenuOpen ? (
@@ -280,7 +341,7 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
               ) : (
                 <Menu className="block h-6 w-6" aria-hidden="true" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -291,13 +352,13 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
           ? 'max-h-96 opacity-100' 
           : 'max-h-0 opacity-0 overflow-hidden'
       }`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-black/95 backdrop-blur-md border-t border-gray-700">
+        <div className="px-2 pt-2 pb-3 space-y-1 bg-background/95 backdrop-blur-md border-t border-border">
           {navLinks.map((link, index) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={closeMenu}
-              className={`text-gray-300 hover:text-white hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 transform ${
+              className={`text-muted-foreground hover:text-foreground hover:bg-accent block px-3 py-2 rounded-md text-base font-medium transition-all duration-200 transform ${
                 isMenuOpen 
                   ? 'translate-y-0 opacity-100' 
                   : '-translate-y-2 opacity-0'
@@ -315,7 +376,7 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
       {/* Overlay for mobile menu */}
       {isMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-[-1] md:hidden"
+          className="fixed inset-0 bg-background/50 z-[-1] md:hidden"
           onClick={closeMenu}
         />
       )}
@@ -323,4 +384,4 @@ const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) =
   );
 };
 
-export default NavbarClient;
+export default NavbarClientAuth;
