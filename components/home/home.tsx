@@ -165,7 +165,7 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-visible">
         {/* Spline 3D Scene */}
         <div 
           ref={splineRef}

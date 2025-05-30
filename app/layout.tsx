@@ -85,7 +85,7 @@ export default function RootLayout({
           <Navbar />
           
           {/* Main Content */}
-          <main className="relative mt-20">
+          <main className="relative mt-20 max-w-7xl mx-auto">
             {children}
           </main>
           <div className="fixed bottom-4 right-4 z-50"> 
