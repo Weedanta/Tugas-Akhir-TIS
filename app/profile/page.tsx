@@ -58,7 +58,7 @@ export default async function Profile(props: { searchParams: Promise<Message> })
                 )}
                 {/* Fetch details from supabase's public.profile */}
                 <h2 className="text-2xl font-medium">Your Profile</h2>
-                <form className="flex flex-col gap-4" action={updateProfile}>
+                <form className="flex flex-col gap-4 min-w-[30%]" action={updateProfile}>
                     <Label htmlFor="email">Email</Label>
                     <Input type="email" name="email" placeholder="Email" defaultValue={user.email || ""} disabled />
                     <Label htmlFor="username">Username</Label>
@@ -68,6 +68,7 @@ export default async function Profile(props: { searchParams: Promise<Message> })
                     <Button type="submit" className="mt-4 bg-secondary-foreground text-white">Update</Button>
                 </form>
                 <FormMessage message={searchParams} />
+                <div className="my-2"></div>
             </div>
         </div>
     );

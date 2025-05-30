@@ -158,7 +158,7 @@ const NavbarClientAuth: React.FC = () => {
                 <img 
                   src={profile.profile_url} 
                   alt="Profile"
-                  className="w-8 h-8 rounded-full border-2 border-primary object-cover cursor-pointer"
+                  className="w-8 h-8 rounded-full border border-primary object-cover cursor-pointer"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold cursor-pointer">

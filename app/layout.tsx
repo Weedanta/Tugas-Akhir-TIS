@@ -89,7 +89,7 @@ export default function RootLayout({
             {children}
           </main>
           <div className="fixed bottom-4 right-4 z-50"> 
-          <ThemeSwitcher/>
+            <ThemeSwitcher/>
           </div>
 
           {/* Footer */}

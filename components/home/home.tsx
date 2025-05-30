@@ -103,22 +103,26 @@ const HomePage: React.FC = () => {
     {
       icon: <Calendar className="h-8 w-8" />,
       title: "Daily Updates",
-      description: "Get fresh space content every single day with NASA's carefully curated astronomical imagery and discoveries."
+      description: "Get fresh space content every single day with NASA's carefully curated astronomical imagery and discoveries.",
+      href: '/daily-facts'
     },
     {
       icon: <Camera className="h-8 w-8" />,
       title: "High-Quality Images",
-      description: "Experience breathtaking high-resolution images from NASA's telescopes, spacecraft, and astronomical observatories."
+      description: "Experience breathtaking high-resolution images from NASA's telescopes, spacecraft, and astronomical observatories.",
+      href: '/gallery'
     },
     {
       icon: <Telescope className="h-8 w-8" />,
       title: "Scientific Explanations",
-      description: "Learn from expert astronomers and scientists with detailed explanations accompanying each cosmic phenomenon."
+      description: "Learn from expert astronomers and scientists with detailed explanations accompanying each cosmic phenomenon.",
+      href: '/about'
     },
     {
       icon: <Globe className="h-8 w-8" />,
       title: "Explore the Universe",
-      description: "Journey through galaxies, nebulae, planets, and cosmic events that shape our understanding of space."
+      description: "Journey through galaxies, nebulae, planets, and cosmic events that shape our understanding of space.",
+      href: '/about'
     }
   ];
 
@@ -339,53 +343,55 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <motion.div 
-                className="relative h-80 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl overflow-hidden border border-primary/20"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div 
-                    className="text-center space-y-4"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    viewport={{ once: true }}
-                  >
-                    <motion.div
-                      animate={{ 
-                        rotate: [0, 360],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ 
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                    >
-                      <Star className="h-16 w-16 text-primary mx-auto" />
-                    </motion.div>
+              <Link href="/daily-facts">
+                <motion.div 
+                  className="relative h-80 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl overflow-hidden border border-primary/20"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <motion.div 
-                      className="text-lg font-semibold"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.6 }}
+                      className="text-center space-y-4"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.6, delay: 0.5 }}
                       viewport={{ once: true }}
                     >
-                      Today&apos;s Featured Image
+                      <motion.div
+                        animate={{ 
+                          rotate: [0, 360],
+                          scale: [1, 1.1, 1]
+                        }}
+                        transition={{ 
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                      >
+                        <Star className="h-16 w-16 text-primary mx-auto" />
+                      </motion.div>
+                      <motion.div 
+                        className="text-lg font-semibold"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.6 }}
+                        viewport={{ once: true }}
+                      >
+                        Today&apos;s Featured Image
+                      </motion.div>
+                      <motion.div 
+                        className="text-sm text-muted-foreground px-4"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.7 }}
+                        viewport={{ once: true }}
+                      >
+                        Experience breathtaking views of nebulae, galaxies, and cosmic phenomena
+                      </motion.div>
                     </motion.div>
-                    <motion.div 
-                      className="text-sm text-muted-foreground px-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.7 }}
-                      viewport={{ once: true }}
-                    >
-                      Experience breathtaking views of nebulae, galaxies, and cosmic phenomena
-                    </motion.div>
-                  </motion.div>
-                </div>
-              </motion.div>
+                  </div>
+                </motion.div>
+              </Link>
             </motion.div>
           </div>
         </div>
@@ -435,62 +441,63 @@ const HomePage: React.FC = () => {
             viewport={{ once: true }}
           >
             {features.map((feature, index) => (
-              <motion.div 
-                key={index}
-                className="group p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
-                variants={{
-                  initial: { opacity: 0, y: 60, scale: 0.9 },
-                  animate: { 
-                    opacity: 1, 
-                    y: 0, 
-                    scale: 1,
-                    transition: { 
-                      duration: 0.6, 
-                      delay: index * 0.1,
-                      ease: "easeOut"
-                    }
-                  }
-                }}
-                whileHover={{ 
-                  y: -10,
-                  scale: 1.02,
-                  transition: { duration: 0.3 }
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
+              <Link href={feature.href} key={index}>
                 <motion.div 
-                  className="text-primary mb-4 group-hover:scale-110 transition-transform duration-300"
-                  initial={{ scale: 0, rotate: -180 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: 0.3 + index * 0.1,
-                    type: "spring",
-                    stiffness: 100
+                  className="group p-6 rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
+                  variants={{
+                    initial: { opacity: 0, y: 60, scale: 0.9 },
+                    animate: { 
+                      opacity: 1, 
+                      y: 0, 
+                      scale: 1,
+                      transition: { 
+                        duration: 0.6, 
+                        delay: index * 0.1,
+                        ease: "easeOut"
+                      }
+                    }
                   }}
-                  viewport={{ once: true }}
+                  whileHover={{ 
+                    y: -10,
+                    scale: 1.02,
+                    transition: { duration: 0.3 }
+                  }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {feature.icon}
+                  <motion.div 
+                    className="text-primary mb-4 group-hover:scale-110 transition-transform duration-300"
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    transition={{ 
+                      duration: 0.5, 
+                      delay: 0.3 + index * 0.1,
+                      type: "spring",
+                      stiffness: 100
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    {feature.icon}
+                  </motion.div>
+                  <motion.h3 
+                    className="text-xl font-semibold mb-3"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    {feature.title}
+                  </motion.h3>
+                  <motion.p 
+                    className="text-muted-foreground leading-relaxed"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    {feature.description}
+                  </motion.p>
                 </motion.div>
-                <motion.h3 
-                  className="text-xl font-semibold mb-3"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  {feature.title}
-                </motion.h3>
-                <motion.p 
-                  className="text-muted-foreground leading-relaxed"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  {feature.description}
-                </motion.p>
-              </motion.div>
+              </Link>
             ))}
           </motion.div>
         </div>
