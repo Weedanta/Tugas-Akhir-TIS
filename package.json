@@ -17,6 +17,7 @@
     "autoprefixer": "10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.15.0",
     "lucide-react": "^0.468.0",
     "next": "^15.3.2",

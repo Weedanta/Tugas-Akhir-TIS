@@ -86,7 +86,7 @@ export default function RootLayout({
           <Navbar />
           
           {/* Main Content */}
-          <main className="relative mt-20 max-w-7xl mx-auto">
+          <main className="relative mt-20 max-w-7xl mx-auto mb-20">
             {children}
             <Toaster />
           </main>
