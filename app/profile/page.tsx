@@ -1,13 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
-import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { FormMessage, Message } from "@/components/form-message";
+import updateProfile from "./action";
 
 export const metadata = {
     title: "Profile",
     description: "Profile",
 };
 
-export default async function Profile() {
+export default async function Profile(props: { searchParams: Promise<Message> }) {
+    const searchParams = await props.searchParams;
     const supabase = await createClient();
 
     // Double-check (on top of middleware lmao)
@@ -52,9 +57,17 @@ export default async function Profile() {
                     </div>
                 )}
                 {/* Fetch details from supabase's public.profile */}
-                <p>{data.id}</p>
-                <p>{data.username || user.email}</p>
-                <p>{data.birthdate}</p>
+                <h2 className="text-2xl font-medium">Your Profile</h2>
+                <form className="flex flex-col gap-4" action={updateProfile}>
+                    <Label htmlFor="email">Email</Label>
+                    <Input type="email" name="email" placeholder="Email" defaultValue={user.email || ""} disabled />
+                    <Label htmlFor="username">Username</Label>
+                    <Input type="text" name="username" placeholder="Username" defaultValue={data.username || ""} />
+                    <Label htmlFor="birthdate">Birthdate</Label>
+                    <Input type="date" name="birthdate" defaultValue={data.birthdate || ""} />
+                    <Button type="submit" className="mt-4">Update</Button>
+                </form>
+                <FormMessage message={searchParams} />
             </div>
         </div>
     );
