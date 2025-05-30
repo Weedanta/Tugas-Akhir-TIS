@@ -11,7 +11,7 @@ import Link from "next/link"
 
 export default async function Gallery() {
     const supabase = await createClient();
-    const { data } = await supabase.from("apod_entry").select().limit(16).order("date", { ascending: false });
+    const { data } = await supabase.from("apod_entry").select().limit(365).order("date", { ascending: false });
 
     return (
         <div className="flex flex-col rounded-md p-4 gap-3">
@@ -45,6 +45,8 @@ export default async function Gallery() {
                                             src={entry.url} 
                                             alt={entry.title} 
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     ) : (
                                         <div className="flex items-center justify-center w-full h-full text-muted-foreground">
