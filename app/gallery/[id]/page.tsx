@@ -1,33 +1,36 @@
 import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { WishlistButton } from "@/components/gallery/wishlist-button"
+import BackButton from "@/components/gallery/back-button"
 
 export default async function APODDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const supabase = await createClient()
   const { data: entry } = await supabase
     .from("apod_entry")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", (await params).id)
     .single()
 
   if (!entry) {
     notFound()
   }
 
+
+
   return (
-    <div className="flex flex-col border rounded-md p-4 gap-4">
+    <div className="flex flex-col border rounded-md p-4 gap-4 mb-5">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/gallery">
+        <BackButton />
+        {/* <Button variant="outline" size="icon" asChild>
+          <Link href={"/gallery"}>
             <ArrowLeft className="h-4 w-4" />
           </Link>
-        </Button>
+        </Button> */}
         <h1 className="text-2xl font-medium">{entry.title}</h1>
       </div>
       
@@ -67,19 +70,20 @@ export default async function APODDetailPage({
             <h2 className="text-sm font-medium text-muted-foreground">Explanation</h2>
             <p className="whitespace-pre-line">{entry.explanation || 'No explanation available.'}</p>
           </div>
-          
-          {entry.hdurl && (
-            <Button asChild>
-              <a 
-                href={entry.hdurl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="mt-4"
-              >
-                View HD Version
-              </a>
-            </Button>
-          )}
+          <div className="flex gap-4 items-center">
+            {entry.hdurl && (
+              <Button asChild>
+                <a 
+                  href={entry.hdurl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  View HD Version
+                </a>
+              </Button>
+            )}
+            <WishlistButton apodId={entry.id} title={entry.title} />
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
 import { Navbar, geistSans, ThemeProvider, ThemeSwitcher, Footer } from '@/lib/barrel';
+import { Toaster } from "@/components/ui/sonner"
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -87,6 +88,7 @@ export default function RootLayout({
           {/* Main Content */}
           <main className="relative mt-20 max-w-7xl mx-auto">
             {children}
+            <Toaster />
           </main>
           <div className="fixed bottom-4 right-4 z-50"> 
             <ThemeSwitcher/>

@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Rocket, User, LogOut, Settings } from 'lucide-react';
+import { Menu, X, Rocket, User, LogOut, Settings, Heart } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
@@ -200,6 +200,16 @@ const NavbarClientAuth: React.FC = () => {
                 </Link>
               </DropdownMenuItem>
             )}
+
+            <DropdownMenuItem asChild>
+              <Link 
+                href="/wishlist" 
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <Heart className="h-4 w-4" />
+                Wishlist
+              </Link>
+            </DropdownMenuItem>
 
             <DropdownMenuSeparator />
             
