@@ -14,10 +14,10 @@ export default async function Gallery() {
     const { data } = await supabase.from("apod_entry").select().limit(16).order("date", { ascending: false });
 
     return (
-        <div className="flex flex-col border rounded-md p-4 gap-3">
+        <div className="flex flex-col rounded-md p-4 gap-3">
             <h1 className="text-2xl font-medium">Gallery</h1>
             <p className="text-sm text-muted-foreground">See All Available Astronomy Picture of The Day from NASA</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 border p-6 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6">
                 {data?.map((entry, index) => (
                     <Link 
                         key={entry.id}
