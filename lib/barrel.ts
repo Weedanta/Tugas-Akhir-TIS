@@ -28,6 +28,9 @@ export { default as Navbar } from '@/components/layout/navbar';
 export { default as Footer } from '@/components/layout/footer';
 
 export { default as HomePage } from '@/components/home/home';
+export { default as AboutNASAPage } from '@/components/about/about_nasa';
+
+
 export { default as DeployButton } from '@/components/deploy-button';
 export { EnvVarWarning } from '@/components/env-var-warning';
 export { default as HeaderAuth } from '@/components/header-auth';
