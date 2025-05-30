@@ -89,7 +89,8 @@ const NavbarClientAuth: React.FC = () => {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('NavbarAuth: Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
-      
+      getUser();
+
       if (session?.user) {
         setUser(session.user);
         
@@ -113,7 +114,7 @@ const NavbarClientAuth: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [authState]);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
