@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
         {/* Spline 3D Scene */}
         <div 
           ref={splineRef}
-          className="absolute inset-0 w-full h-full"
+          className="hidden md:block absolute inset-0 w-full h-full"
         />
 
         {/* Gradient Overlay */}
