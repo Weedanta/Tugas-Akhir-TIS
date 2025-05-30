@@ -1,10 +1,9 @@
-"use client"
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Rocket, User, LogOut, Settings } from 'lucide-react';
-import { createClient } from '@/utils/supabase/server';
 import { signOutAction } from '@/app/actions';
-import { hasEnvVars } from '@/utils/supabase/check-env-vars';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -16,12 +15,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-interface NavbarProps {
+interface NavbarClientProps {
   user?: any;
   profile?: any;
+  hasEnvVars?: boolean;
 }
 
-const NavbarClient = ({ user, profile }: NavbarProps) => {
+const NavbarClient = ({ user, profile, hasEnvVars = true }: NavbarClientProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -50,6 +50,14 @@ const NavbarClient = ({ user, profile }: NavbarProps) => {
     { href: '/gallery', label: 'Gallery' },
     { href: '/contact', label: 'Contact' }
   ];
+
+  const handleSignOut = async () => {
+    try {
+      await signOutAction();
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
 
   const renderAuthSection = () => {
     if (!hasEnvVars) {
@@ -139,16 +147,14 @@ const NavbarClient = ({ user, profile }: NavbarProps) => {
 
             <DropdownMenuSeparator className="bg-gray-700" />
             
-            <DropdownMenuItem asChild>
-              <form action={signOutAction} className="w-full">
-                <button 
-                  type="submit"
-                  className="flex items-center gap-2 text-red-400 hover:text-red-300 hover:bg-gray-700 w-full text-left p-0"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign out
-                </button>
-              </form>
+            <DropdownMenuItem>
+              <button 
+                onClick={handleSignOut}
+                className="flex items-center gap-2 text-red-400 hover:text-red-300 w-full text-left"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -245,13 +251,14 @@ const NavbarClient = ({ user, profile }: NavbarProps) => {
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator className="bg-gray-700" />
-                    <DropdownMenuItem asChild>
-                      <form action={signOutAction}>
-                        <button className="flex items-center text-red-400 hover:text-red-300 w-full text-left">
-                          <LogOut className="h-4 w-4 mr-2" />
-                          Sign out
-                        </button>
-                      </form>
+                    <DropdownMenuItem>
+                      <button 
+                        onClick={handleSignOut}
+                        className="flex items-center text-red-400 hover:text-red-300 w-full text-left"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign out
+                      </button>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -316,28 +323,4 @@ const NavbarClient = ({ user, profile }: NavbarProps) => {
   );
 };
 
-// Server Component Wrapper
-const Navbar = async () => {
-  const supabase = await createClient();
-  
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  let profile = null;
-  if (user) {
-    const { data } = await supabase
-      .from("profile")
-      .select()
-      .eq("id", user.id)
-      .single();
-      
-    if (data) {
-      profile = data;
-    }
-  }
-
-  return <NavbarClient user={user} profile={profile} />;
-};
-
-export default Navbar;
+export default NavbarClient;
