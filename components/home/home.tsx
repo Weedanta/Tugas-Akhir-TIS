@@ -1,4 +1,4 @@
-// components/pages/home-page.tsx
+// components/home/home.tsx
 'use client';
 
 import React, { useEffect, useRef } from 'react';
@@ -15,9 +15,9 @@ import {
   ChevronRight,
   Sparkles
 } from 'lucide-react';
+import Earth3D from './earth'; // Sesuaikan path dengan struktur folder Anda
 
 const HomePage: React.FC = () => {
-  const splineRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref);
@@ -57,47 +57,6 @@ const HomePage: React.FC = () => {
 
     return <span ref={counterRef}>{count}</span>;
   };
-
-  useEffect(() => {
-    // Load Spline viewer script
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = 'https://unpkg.com/@splinetool/viewer@1.9.28/build/spline-viewer.js';
-    
-    script.onload = () => {
-      // Create spline-viewer element after script loads
-      if (splineRef.current) {
-        const splineViewer = document.createElement('spline-viewer');
-        splineViewer.setAttribute('loading-anim-type', 'spinner-small-light');
-        splineViewer.setAttribute('url', 'https://prod.spline.design/H4aw8VeY0ATSL3MC/scene.splinecode');
-        
-        // Apply styles
-        Object.assign(splineViewer.style, {
-          position: 'absolute',
-          top: '-5%',
-          left: '30%',
-          width: '100%',
-          height: '120%',
-          zIndex: '0',
-          overflow: 'hidden',
-        });
-        
-        splineRef.current.appendChild(splineViewer);
-      }
-    };
-    
-    document.head.appendChild(script);
-
-    return () => {
-      // Clean up
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-      if (splineRef.current) {
-        splineRef.current.innerHTML = '';
-      }
-    };
-  }, []);
 
   const features = [
     {
@@ -170,21 +129,42 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-visible">
-        {/* Spline 3D Scene */}
-        <div 
-          ref={splineRef}
-          className="hidden md:block absolute inset-0 w-full h-full"
-        />
+        {/* Custom 3D Earth Scene - Responsive positioning */}
+        <div className="hidden lg:block absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 w-full h-full flex justify-end items-center pr-8">
+            <div style={{
+              position: 'relative',
+              width: '50%',
+              height: '80%',
+              maxWidth: '600px',
+              zIndex: 0,
+              overflow: 'hidden',
+            }}>
+              <Earth3D />
+            </div>
+          </div>
+        </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent z-10" />
+        {/* Tablet version with simpler positioning */}
+        <div className="hidden md:block lg:hidden absolute inset-0 w-full h-full">
+          <div className="absolute right-0 top-1/2 transform -translate-y-1/2" style={{
+            width: '45%',
+            height: '70%',
+            maxWidth: '400px',
+            zIndex: 0,
+            overflow: 'hidden',
+          }}>
+            <Earth3D />
+          </div>
+        </div>
+
+        {/* Gradient Overlay - responsive */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/30 z-10" />
         
         {/* Hero Content */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              
-
               {/* Main Heading */}
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
@@ -225,7 +205,7 @@ const HomePage: React.FC = () => {
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center">
                     <div className="text-2xl md:text-3xl font-bold text-primary">
-                      {stat.number}
+                      <AnimatedCounter value={stat.number} />
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {stat.label}
