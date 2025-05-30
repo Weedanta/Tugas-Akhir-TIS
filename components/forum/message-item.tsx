@@ -16,39 +16,46 @@ function getInitials(username: string): string {
   return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
 }
 
-// Generate a consistent color based on the username
-function stringToColor(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  
-  // Generate a pastel color
-  const hue = hash % 360;
-  return `hsl(${hue}, 70%, 75%)`;
-}
-
 export function MessageItem({ message }: MessageItemProps) {
   const initials = getInitials(message.username);
-  const bgColor = stringToColor(message.username);
 
-  return (
-    <div className="flex gap-3 p-4 hover:bg-muted/50">
-      <div 
-        className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full text-sm font-medium text-gray-800"
-        style={{ backgroundColor: bgColor }}
-      >
-        {initials}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-medium truncate">{message.username}</span>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
-            {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
-          </span>
+  if (message.profile_url) {
+    return (
+      <div className="flex gap-3 p-4 hover:bg-muted/50">
+        <img 
+          className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full text-sm font-medium text-foreground bg-background border-2"
+          src={message.profile_url}
+          alt={message.username}
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-medium truncate">{message.username}</span>
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+            </span>
+          </div>
+          <p className="text-sm mt-1 break-words">{message.content}</p>
         </div>
-        <p className="text-sm mt-1 break-words">{message.content}</p>
       </div>
-    </div>
-  );
+    )
+  } else {
+    return (
+      <div className="flex gap-3 p-4 hover:bg-muted/50">
+        <div 
+          className="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full text-sm font-medium text-foreground bg-background border-2"
+        >
+            {initials}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-medium truncate">{message.username}</span>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+              </span>
+            </div>
+            <p className="text-sm mt-1 break-words">{message.content}</p>
+          </div>
+        </div>
+      );
+  };
 }

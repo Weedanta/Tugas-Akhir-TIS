@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { signOutAction } from '@/app/actions';
 
 // Type definitions
 interface User {
@@ -37,6 +38,7 @@ const NavbarClientAuth: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [authState, setAuthState] = useState<number>(0); // Add this line to track auth state changes
 
   const supabase = createClient();
 
@@ -111,7 +113,7 @@ const NavbarClientAuth: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [authState]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -127,6 +129,8 @@ const NavbarClientAuth: React.FC = () => {
       setUser(null);
       setProfile(null);
       closeMenu();
+      signOutAction();
+      setAuthState(prev => prev + 1); // Increment to trigger re-render
     } catch (error) {
       console.error('NavbarAuth: Sign out error:', error);
     }
@@ -138,6 +142,11 @@ const NavbarClientAuth: React.FC = () => {
     { href: '/daily-facts', label: 'Daily Facts' },
     { href: '/gallery', label: 'Gallery' },
   ];
+
+  // Add authState to dependency array to ensure re-render when auth state changes
+  useEffect(() => {
+    // This effect will run whenever authState changes
+  }, [authState]);
 
   const renderAuthSection = () => {
     if (isLoading) {

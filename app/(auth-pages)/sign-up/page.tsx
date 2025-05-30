@@ -25,7 +25,7 @@ export default async function Signup(props: {
   }
 
   return (
-    <>
+    <div className="min-h-[72vh] flex flex-col justify-center">
       <form className="flex flex-col min-w-64 max-w-64 mx-auto">
         <h1 className="text-2xl font-medium">Sign up</h1>
         <p className="text-sm text text-foreground">
@@ -53,6 +53,6 @@ export default async function Signup(props: {
       </form>
       <ProviderSignInButtons />
       {/* <SmtpMessage /> */}
-    </>
+    </div>
   );
 }
