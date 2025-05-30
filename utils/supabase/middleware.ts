@@ -39,20 +39,7 @@ export const updateSession = async (request: NextRequest) => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
 
-    // Define Protected Routes
-    const protectedRoutes = [
-      '/profile',
-      '/wishlist',
-      '/protected'
-    ];
-
-    // Check if request or current path is protected (Boolean)
-    const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
-
-    // Redirect to sign-in if user is not authenticated and trying to access protected routes
-    if (isProtectedRoute && user.error) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+    redirector(request, user);
 
     // ! Remove Auto Redirect for Landing Page ("/" to "/protected")
     // if (request.nextUrl.pathname === "/" && !user.error) {
@@ -61,13 +48,31 @@ export const updateSession = async (request: NextRequest) => {
 
     return response;
   } catch (e) {
+    redirector(request);
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.
-    return NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    });
+    // return NextResponse.next({
+    //   request: {
+    //     headers: request.headers,
+    //   },
+    // });
   }
 };
+
+function redirector(request: NextRequest, user?: any) {
+  // Define Protected Routes
+  const protectedRoutes = [
+    '/profile',
+    '/wishlist',
+    '/protected'
+  ];
+
+  // Check if request or current path is protected (Boolean)
+  const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+
+  // Redirect to sign-in if user is not authenticated and trying to access protected routes
+  if (isProtectedRoute && (!user || user.error)) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+}

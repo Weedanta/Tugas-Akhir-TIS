@@ -65,7 +65,7 @@ export default async function Profile(props: { searchParams: Promise<Message> })
                     <Input type="text" name="username" placeholder="Username" defaultValue={data.username || ""} />
                     <Label htmlFor="birthdate">Birthdate</Label>
                     <Input type="date" name="birthdate" defaultValue={data.birthdate || ""} />
-                    <Button type="submit" className="mt-4">Update</Button>
+                    <Button type="submit" className="mt-4 bg-secondary-foreground text-white">Update</Button>
                 </form>
                 <FormMessage message={searchParams} />
             </div>
