@@ -38,7 +38,7 @@ const NavbarClientAuth: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [authState, setAuthState] = useState<number>(0); // Add this line to track auth state changes
+  // Removed authState as it's not needed with the new implementation
 
   const supabase = createClient();
 
@@ -51,89 +51,49 @@ const NavbarClientAuth: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const getUser = async () => {
-    try {
-      setIsLoading(true);
-      
-      // Get current user
-      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
-      
-      console.log('NavbarAuth: Current user:', currentUser ? 'Found' : 'None', userError);
-      
-      if (currentUser) {
-        setUser(currentUser);
-        
-        // Get profile
-        const { data: profileData, error: profileError } = await supabase
-          .from('profile')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-          
-        console.log('NavbarAuth: Profile data:', profileData ? 'Found' : 'None', profileError);
-        
-        if (profileData) {
-          setProfile(profileData);
-        }
-      }
-    } catch (error) {
-      console.error('NavbarAuth: Client auth error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-
+  // Fetch user data on each render
   useEffect(() => {
     let isMounted = true;
-  
-    const loadInitialData = async () => {
+    
+    const fetchUser = async () => {
       try {
         setIsLoading(true);
-        await getUser();
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profile')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+            
+          if (isMounted) {
+            setUser(user);
+            setProfile(profile || null);
+          }
+        } else if (isMounted) {
+          setUser(null);
+          setProfile(null);
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        if (isMounted) {
+          setUser(null);
+          setProfile(null);
+        }
       } finally {
         if (isMounted) {
           setIsLoading(false);
         }
       }
     };
-  
-    loadInitialData();
-  
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setAuthState(prev => prev + 1);
-  
-      try {
-        if (session?.user) {
-          setUser(session.user);
-          
-          // Get profile for new user
-          const { data: profileData } = await supabase
-            .from('profile')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-            
-          if (profileData) {
-            setProfile(profileData);
-          }
-        } else {
-          setUser(null);
-          setProfile(null);
-        }
-      } catch (error) {
-        console.error('Error in auth state change:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    });
-  
+    
+    fetchUser();
+    
     return () => {
       isMounted = false;
-      subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -149,8 +109,7 @@ const NavbarClientAuth: React.FC = () => {
       setUser(null);
       setProfile(null);
       closeMenu();
-      signOutAction();
-      setAuthState(prev => prev + 1); // Increment to trigger re-render
+      await signOutAction();
     } catch (error) {
       console.error('NavbarAuth: Sign out error:', error);
     }
@@ -163,10 +122,7 @@ const NavbarClientAuth: React.FC = () => {
     { href: '/gallery', label: 'Gallery' },
   ];
 
-  // Add authState to dependency array to ensure re-render when auth state changes
-  useEffect(() => {
-    // This effect will run whenever authState changes
-  }, [authState]);
+  // Removed unused authState effect
 
   const renderAuthSection = () => {
     if (isLoading) {
