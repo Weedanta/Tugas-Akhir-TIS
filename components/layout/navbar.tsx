@@ -1,7 +1,7 @@
 // components/layout/navbar-client-auth.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, Rocket, User, LogOut, Settings, Heart } from 'lucide-react';
@@ -39,11 +39,10 @@ const NavbarClientAuth: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Removed authState as it's not needed with the new implementation
 
   const supabase = createClient();
-  const pathname = usePathname();
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -53,104 +52,69 @@ const NavbarClientAuth: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch profile data for a given user
-  const fetchProfile = async (userId: string) => {
+  const pathname = usePathname();
+  
+  const fetchUser = useCallback(async () => {
+    let isActive = true;
+    
     try {
-      const { data: profile, error } = await supabase
-        .from('profile')
-        .select('*')
-        .eq('id', userId)
-        .single();
-        
-      if (error) {
-        console.error('Error fetching profile:', error);
-        return null;
-      }
+      setIsLoading(true);
+      const { data: { user }, error } = await supabase.auth.getUser();
       
-      return profile;
+      if (error) throw error;
+      
+      if (user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (profileError) throw profileError;
+        
+        if (isActive) {
+          setUser(user);
+          setProfile(profile || null);
+        }
+      } else if (isActive) {
+        setUser(null);
+        setProfile(null);
+      }
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      return null;
+      console.error('Error fetching user:', error);
+      if (isActive) {
+        setUser(null);
+        setProfile(null);
+      }
+    } finally {
+      if (isActive) {
+        setIsLoading(false);
+      }
     }
-  };
-
-  // Main auth state management
+    
+    return () => { isActive = false; };
+  }, []);
+  
+  // Fetch user on mount and route changes
   useEffect(() => {
-    let isMounted = true;
-
-    // Get initial session
-    const getInitialSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          if (isMounted) {
-            setUser(null);
-            setProfile(null);
-            setIsLoading(false);
-          }
-          return;
-        }
-
-        if (session?.user && isMounted) {
-          setUser(session.user);
-          
-          // Fetch profile for the user
-          const profileData = await fetchProfile(session.user.id);
-          if (isMounted) {
-            setProfile(profileData);
-          }
-        } else if (isMounted) {
-          setUser(null);
-          setProfile(null);
-        }
-        
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Error in getInitialSession:', error);
-        if (isMounted) {
-          setUser(null);
-          setProfile(null);
-          setIsLoading(false);
-        }
+    fetchUser();
+  }, [fetchUser, pathname]);
+  
+  // Set up auth state change listener for real-time updates
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        setProfile(null);
       }
-    };
-
-    // Set up auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!isMounted) return;
-
-        console.log('Auth state changed:', event, session?.user?.id);
-
-        if (event === 'SIGNED_OUT' || !session?.user) {
-          setUser(null);
-          setProfile(null);
-          setIsLoading(false);
-        } else if (session?.user) {
-          setUser(session.user);
-          
-          // Fetch profile for the new user
-          const profileData = await fetchProfile(session.user.id);
-          if (isMounted) {
-            setProfile(profileData);
-          }
-          setIsLoading(false);
-        }
-      }
-    );
-
-    // Initialize
-    getInitialSession();
-
+    });
+    
     return () => {
-      isMounted = false;
       subscription?.unsubscribe();
     };
-  }, []); // Empty dependency array - only run once
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -162,7 +126,6 @@ const NavbarClientAuth: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
-      setIsLoading(true);
       await supabase.auth.signOut();
       setUser(null);
       setProfile(null);
@@ -170,8 +133,6 @@ const NavbarClientAuth: React.FC = () => {
       await signOutAction();
     } catch (error) {
       console.error('NavbarAuth: Sign out error:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -181,6 +142,8 @@ const NavbarClientAuth: React.FC = () => {
     { href: '/daily-facts', label: 'Daily Facts' },
     { href: '/gallery', label: 'Gallery' },
   ];
+
+  // Removed unused authState effect
 
   const renderAuthSection = () => {
     if (isLoading) {
@@ -193,6 +156,7 @@ const NavbarClientAuth: React.FC = () => {
 
     return user ? (
       <div className="flex items-center gap-2 md:gap-4">
+        {/* User avatar/initial dengan dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center hover:opacity-80 transition-opacity">
