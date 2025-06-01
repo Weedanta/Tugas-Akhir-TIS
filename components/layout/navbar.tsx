@@ -51,7 +51,7 @@ const NavbarClientAuth: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const getUser = useCallback(async () => {
+  const getUser = async () => {
     try {
       setIsLoading(true);
       
@@ -81,12 +81,12 @@ const NavbarClientAuth: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
 
   useEffect(() => {
     getUser();
-
+    
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('NavbarAuth: Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
@@ -114,7 +114,7 @@ const NavbarClientAuth: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [getUser]);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
