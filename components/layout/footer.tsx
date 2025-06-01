@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -17,9 +19,9 @@ export default function Footer() {
                 <div className="space-y-4">
                   <h4 className="text-sm font-semibold text-foreground">Explore</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="/daily-facts" className="hover:text-foreground transition-colors">Daily Facts</a></li>
-                    <li><a href="/gallery" className="hover:text-foreground transition-colors">Gallery</a></li>
-                    <li><a href="/about" className="hover:text-foreground transition-colors">About NASA</a></li>
+                    <li><Link href="/daily-facts" className="hover:text-foreground transition-colors">Daily Facts</Link></li>
+                    <li><Link href="/gallery" className="hover:text-foreground transition-colors">Gallery</Link></li>
+                    <li><Link href="/about" className="hover:text-foreground transition-colors">About NASA</Link></li>
                   </ul>
                 </div>
 
@@ -27,9 +29,9 @@ export default function Footer() {
                 <div className="space-y-4">
                   <h4 className="text-sm font-semibold text-foreground">Resources</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="https://apod.nasa.gov" target="_blank" rel="noopener" className="hover:text-foreground transition-colors">NASA APOD</a></li>
-                    <li><a href="https://nasa.gov" target="_blank" rel="noopener" className="hover:text-foreground transition-colors">NASA Official</a></li>
-                    <li><a href="/contact" className="hover:text-foreground transition-colors">Contact</a></li>
+                    <li><Link href="https://apod.nasa.gov" target="_blank" rel="noopener" className="hover:text-foreground transition-colors">NASA APOD</Link></li>
+                    <li><Link href="https://nasa.gov" target="_blank" rel="noopener" className="hover:text-foreground transition-colors">NASA Official</Link></li>
+                    <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
                   </ul>
                 </div>
 
@@ -37,8 +39,8 @@ export default function Footer() {
                 <div className="space-y-4">
                   <h4 className="text-sm font-semibold text-foreground">Legal</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-                    <li><a href="/terms" className="hover:text-foreground transition-colors">Terms of Service</a></li>
+                    <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
+                    <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
                   </ul>
                 </div>
               </div>

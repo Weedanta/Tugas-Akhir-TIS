@@ -32,7 +32,7 @@ export const signUpAction = async (formData: FormData) => {
   } else {
     return encodedRedirect(
       "success",
-      "/protected",
+      "/",
       "Thanks for signing up! Welcome to Space-TIS",
     );
   }
@@ -131,7 +131,7 @@ export const signOutAction = async () => {
   return redirect("/sign-in");
 };
 
-export const signInWithGithub = async (formData: FormData) => {
+export const signInWithGithub = async () => {
   const { supabase, origin } = await getAuthContext();
 
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -153,7 +153,7 @@ export const signInWithGithub = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", "No URL returned from GitHub sign-in");
 };
 
-export const signInWithGoogle = async (formData: FormData) => {
+export const signInWithGoogle = async () => {
     const { supabase, origin } = await getAuthContext();
     
     const { data, error } = await supabase.auth.signInWithOAuth({

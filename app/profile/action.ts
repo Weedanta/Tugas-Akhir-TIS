@@ -13,7 +13,7 @@ export default async function updateProfile(formData: FormData) {
         return encodedRedirect("error", "/profile", "User not found");
     }
 
-    const { data, error } = await supabase.from("profile").update({
+    const { error } = await supabase.from("profile").update({
         username,
         birthdate,
     }).eq("id", user.id);

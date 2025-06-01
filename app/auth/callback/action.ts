@@ -1,11 +1,11 @@
 "use server"
 
-import { getAuthContext } from "@/app/actions";
+import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 import type { UserIdentity } from "@supabase/supabase-js";
 
 export default async function checkIdentity() {
-    const { supabase, origin } = await getAuthContext();
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
@@ -26,7 +26,7 @@ export default async function checkIdentity() {
 
     // Add data from "user_metadata" to supabase table "profile"
     // For id, username, and profile_url with upsert
-    const { data, error } = await supabase.from("profile").upsert({
+    const { error } = await supabase.from("profile").upsert({
         id: user.id,
         username: user.user_metadata?.name?.toString() || user.user_metadata?.user_name?.toString() || "",
         profile_url: user.user_metadata?.avatar_url?.toString() || "",

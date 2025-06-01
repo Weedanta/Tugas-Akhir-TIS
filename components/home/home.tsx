@@ -13,14 +13,13 @@ import {
   Telescope, 
   Globe,
   ChevronRight,
-  Sparkles
 } from 'lucide-react';
 import Earth3D from './earth'; // Sesuaikan path dengan struktur folder Anda
 
 const HomePage: React.FC = () => {
-  const controls = useAnimation();
-  const ref = useRef(null);
-  const isInView = useInView(ref);
+  // const controls = useAnimation();
+  // const ref = useRef(null);
+  // const isInView = useInView(ref);
 
   // Animated Counter Component
   const AnimatedCounter = ({ value, duration = 2000 }: { value: string; duration?: number }) => {
@@ -93,23 +92,23 @@ const HomePage: React.FC = () => {
   ];
 
   // Animation variants
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: "easeOut" }
-  };
+  // const fadeInUp = {
+  //   initial: { opacity: 0, y: 60 },
+  //   animate: { opacity: 1, y: 0 },
+  //   transition: { duration: 0.6, ease: "easeOut" }
+  // };
 
-  const fadeInLeft = {
-    initial: { opacity: 0, x: -60 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.8, ease: "easeOut" }
-  };
+  // const fadeInLeft = {
+  //   initial: { opacity: 0, x: -60 },
+  //   animate: { opacity: 1, x: 0 },
+  //   transition: { duration: 0.8, ease: "easeOut" }
+  // };
 
-  const fadeInRight = {
-    initial: { opacity: 0, x: 60 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.8, ease: "easeOut" }
-  };
+  // const fadeInRight = {
+  //   initial: { opacity: 0, x: 60 },
+  //   animate: { opacity: 1, x: 0 },
+  //   transition: { duration: 0.8, ease: "easeOut" }
+  // };
 
   const staggerContainer = {
     animate: {
@@ -119,11 +118,11 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const scaleIn = {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: { opacity: 1, scale: 1 },
-    transition: { duration: 0.5, ease: "easeOut" }
-  };
+  // const scaleIn = {
+  //   initial: { opacity: 0, scale: 0.8 },
+  //   animate: { opacity: 1, scale: 1 },
+  //   transition: { duration: 0.5, ease: "easeOut" }
+  // };
 
   return (
     <div className="min-h-screen bg-background">

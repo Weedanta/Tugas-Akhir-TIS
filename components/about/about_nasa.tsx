@@ -3,7 +3,7 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
   Rocket, 
@@ -11,10 +11,7 @@ import {
   Globe, 
   Satellite,
   Users,
-  Calendar,
   Target,
-  Award,
-  BookOpen,
   ChevronRight,
   Telescope,
   Zap,
@@ -25,15 +22,6 @@ import {
 
 const AboutNASAPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  // Parallax transforms
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 1, 0.3]);
 
   // Animated Counter Component
   const AnimatedCounter = ({ value, suffix = "", duration = 2000 }: { value: number; suffix?: string; duration?: number }) => {
@@ -121,30 +109,12 @@ const AboutNASAPage: React.FC = () => {
     transition: { duration: 0.8, ease: "easeOut" }
   };
 
-  const fadeInLeft = {
-    initial: { opacity: 0, x: -60 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.8, ease: "easeOut" }
-  };
-
-  const fadeInRight = {
-    initial: { opacity: 0, x: 60 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.8, ease: "easeOut" }
-  };
-
   const staggerContainer = {
     animate: {
       transition: {
         staggerChildren: 0.1
       }
     }
-  };
-
-  const scaleIn = {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: { opacity: 1, scale: 1 },
-    transition: { duration: 0.6, ease: "easeOut" }
   };
 
   return (

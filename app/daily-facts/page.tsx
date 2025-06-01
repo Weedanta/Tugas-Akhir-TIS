@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Camera, Info } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
   title: "Daily Space Facts | NASA APOD",
@@ -26,7 +27,7 @@ export default async function DailyFacts() {
         <div className="text-center max-w-2xl">
           <h1 className="text-2xl font-bold mb-4">No APOD for Today</h1>
           <p className="text-muted-foreground mb-6">
-            There's no Astronomy Picture of the Day available for today. Please check back later or explore our gallery.
+            There&apos;s no Astronomy Picture of the Day available for today. Please check back later or explore our gallery.
           </p>
           <Button asChild>
             <Link href="/gallery">
@@ -42,7 +43,7 @@ export default async function DailyFacts() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Today's Space Discovery</h1>
+        <h1 className="text-3xl font-bold mb-2">Today&apos;s Space Discovery</h1>
         <p className="text-muted-foreground">
           Your daily dose of space exploration and astronomical wonders
         </p>
@@ -117,7 +118,7 @@ export default async function DailyFacts() {
       <div className="mt-8 p-4 bg-muted/50 rounded-lg flex items-start gap-3">
         <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
         <div>
-          <h3 className="font-medium mb-1">About NASA's Astronomy Picture of the Day</h3>
+          <h3 className="font-medium mb-1">About NASA&apos;s Astronomy Picture of the Day</h3>
           <p className="text-sm text-muted-foreground">
             Each day a different image or photograph of our fascinating universe is featured, 
             along with a brief explanation written by a professional astronomer.

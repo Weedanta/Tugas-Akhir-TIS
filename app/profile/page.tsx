@@ -32,7 +32,7 @@ export default async function Profile(props: { searchParams: Promise<Message> })
         <div className="min-h-[72vh] flex-1 w-full flex flex-col gap-12 justify-center">
             <div className="flex flex-col gap-2 items-center">
                 { data.profile_url ? (
-                    <img className="border-2 border-foreground rounded-full w-40 h-40 aspect-square" src={data.profile_url} />
+                    <img className="border-2 border-foreground rounded-full w-40 h-40 aspect-square" src={data.profile_url} alt={data.username || user.email || ""}/>
                 ) : (
                     <div className="border-2 border-foreground rounded-full w-40 h-40 aspect-square flex items-center justify-center">
                         {data.username ? (

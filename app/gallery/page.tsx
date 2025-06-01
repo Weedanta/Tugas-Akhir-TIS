@@ -18,7 +18,7 @@ export default async function Gallery() {
             <h1 className="text-2xl font-medium">Gallery</h1>
             <p className="text-sm text-muted-foreground">See All Available Astronomy Picture of The Day from NASA</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6">
-                {data?.map((entry, index) => (
+                {data?.map((entry) => (
                     <Link 
                         key={entry.id}
                         href={`/gallery/${entry.id}`}

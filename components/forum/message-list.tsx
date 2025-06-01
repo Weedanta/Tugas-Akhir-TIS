@@ -13,7 +13,7 @@ interface MessagesListProps {
 
 export function MessagesList({ initialMessages, apodId }: MessagesListProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [channel, setChannel] = useState<any>(null);
+  // const [channel, setChannel] = useState<any>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -32,8 +32,6 @@ export function MessagesList({ initialMessages, apodId }: MessagesListProps) {
         }
       )
       .subscribe();
-
-    setChannel(channel);
 
     return () => {
       if (channel) channel.unsubscribe();
