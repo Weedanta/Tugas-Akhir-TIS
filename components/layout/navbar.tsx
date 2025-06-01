@@ -1,7 +1,8 @@
 // components/layout/navbar-client-auth.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, Rocket, User, LogOut, Settings, Heart } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
@@ -51,49 +52,80 @@ const NavbarClientAuth: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch user data on each render
-  useEffect(() => {
-    let isMounted = true;
+  const pathname = usePathname();
+  
+  const fetchUser = useCallback(async () => {
+    let isActive = true;
     
-    const fetchUser = async () => {
-      try {
-        setIsLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
+    try {
+      setIsLoading(true);
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error) throw error;
+      
+      if (user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (profileError) throw profileError;
         
-        if (user) {
-          const { data: profile } = await supabase
-            .from('profile')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-            
-          if (isMounted) {
-            setUser(user);
-            setProfile(profile || null);
-          }
-        } else if (isMounted) {
-          setUser(null);
-          setProfile(null);
+        if (isActive) {
+          setUser(user);
+          setProfile(profile || null);
         }
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        if (isMounted) {
-          setUser(null);
-          setProfile(null);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+      } else if (isActive) {
+        setUser(null);
+        setProfile(null);
       }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      if (isActive) {
+        setUser(null);
+        setProfile(null);
+      }
+    } finally {
+      if (isActive) {
+        setIsLoading(false);
+      }
+    }
+    
+    return () => { isActive = false; };
+  }, []);
+  
+  // Fetch user on mount and route changes
+  useEffect(() => {
+    let isActive = true;
+    
+    const fetchData = async () => {
+      const cleanup = await fetchUser();
+      return cleanup;
     };
     
-    fetchUser();
+    fetchData();
     
     return () => {
-      isMounted = false;
+      isActive = false;
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, [fetchUser, pathname]);
+  
+  // Set up auth state change listener for real-time updates
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+    });
+    
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
