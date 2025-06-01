@@ -97,18 +97,7 @@ const NavbarClientAuth: React.FC = () => {
   
   // Fetch user on mount and route changes
   useEffect(() => {
-    let isActive = true;
-    
-    const fetchData = async () => {
-      const cleanup = await fetchUser();
-      return cleanup;
-    };
-    
-    fetchData();
-    
-    return () => {
-      isActive = false;
-    };
+    fetchUser();
   }, [fetchUser, pathname]);
   
   // Set up auth state change listener for real-time updates
