@@ -85,33 +85,52 @@ const NavbarClientAuth: React.FC = () => {
 
 
   useEffect(() => {
-    getUser();
-
+    let isMounted = true;
+  
+    const loadInitialData = async () => {
+      try {
+        setIsLoading(true);
+        await getUser();
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+  
+    loadInitialData();
+  
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('NavbarAuth: Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
-
-      if (session?.user) {
-        setUser(session.user);
-        
-        // Get profile for new user
-        const { data: profileData } = await supabase
-          .from('profile')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
+      setAuthState(prev => prev + 1);
+  
+      try {
+        if (session?.user) {
+          setUser(session.user);
           
-        if (profileData) {
-          setProfile(profileData);
+          // Get profile for new user
+          const { data: profileData } = await supabase
+            .from('profile')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+            
+          if (profileData) {
+            setProfile(profileData);
+          }
+        } else {
+          setUser(null);
+          setProfile(null);
         }
-      } else {
-        setUser(null);
-        setProfile(null);
+      } catch (error) {
+        console.error('Error in auth state change:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
-
+  
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);
