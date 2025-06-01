@@ -1,7 +1,7 @@
 // components/layout/navbar-client-auth.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Menu, X, Rocket, User, LogOut, Settings, Heart } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
@@ -51,39 +51,40 @@ const NavbarClientAuth: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        setIsLoading(true);
+  const getUser = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      
+      // Get current user
+      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
+      
+      console.log('NavbarAuth: Current user:', currentUser ? 'Found' : 'None', userError);
+      
+      if (currentUser) {
+        setUser(currentUser);
         
-        // Get current user
-        const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
-        
-        console.log('NavbarAuth: Current user:', currentUser ? 'Found' : 'None', userError);
-        
-        if (currentUser) {
-          setUser(currentUser);
+        // Get profile
+        const { data: profileData, error: profileError } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
           
-          // Get profile
-          const { data: profileData, error: profileError } = await supabase
-            .from('profile')
-            .select('*')
-            .eq('id', currentUser.id)
-            .single();
-            
-          console.log('NavbarAuth: Profile data:', profileData ? 'Found' : 'None', profileError);
-          
-          if (profileData) {
-            setProfile(profileData);
-          }
+        console.log('NavbarAuth: Profile data:', profileData ? 'Found' : 'None', profileError);
+        
+        if (profileData) {
+          setProfile(profileData);
         }
-      } catch (error) {
-        console.error('NavbarAuth: Client auth error:', error);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('NavbarAuth: Client auth error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
+
+  useEffect(() => {
     getUser();
 
     // Listen for auth changes
@@ -114,7 +115,7 @@ const NavbarClientAuth: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [getUser]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
