@@ -1,104 +1,210 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# NASA APOD Gallery 🚀
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+A modern web application showcasing NASA's Astronomy Picture of the Day (APOD) with user authentication, gallery browsing, and social features.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## ✨ Features
 
-## Features
+### 🔐 Authentication & User Management
+- **User Registration & Login** - Complete authentication system with email/password
+- **OAuth Integration** - Sign in with GitHub and Google providers
+- **Password Recovery** - Forgot password functionality with email reset
+- **User Profiles** - Customizable profiles with avatar, username, and birthdate
+- **Protected Routes** - Secure areas requiring authentication
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+### 🌌 NASA APOD Gallery
+- **Daily Space Facts** - View today's Astronomy Picture of the Day
+- **Complete Gallery** - Browse through NASA's extensive APOD archive
+- **High-Quality Images** - Access to both standard and HD versions of images
+- **Detailed Information** - Complete descriptions, dates, and copyright information
+- **Video Support** - Handle both images and embedded videos from NASA
 
-## Demo
+### 💫 Interactive Features
+- **Wishlist System** - Save favorite APOD entries to personal wishlist
+- **Discussion Forum** - Comment and discuss APOD entries with other users
+- **Responsive Design** - Optimized for desktop, tablet, and mobile devices
+- **Image Hover Effects** - Smooth animations and transitions
+- **Search & Browse** - Easy navigation through the gallery
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+### 📱 User Experience
+- **Modern UI** - Clean, space-themed interface with dark/light mode support
+- **Fast Loading** - Optimized images with lazy loading
+- **SEO Optimized** - Proper metadata and Open Graph tags
+- **Accessibility** - WCAG compliant design elements
 
-## Deploy to Vercel
+## 🛠️ Tech Stack
 
-Vercel deployment will guide you through creating a Supabase account and project.
+### Frontend
+- **[Next.js 14+](https://nextjs.org/)** - React framework with App Router
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[shadcn/ui](https://ui.shadcn.com/)** - Modern React component library
+- **[Lucide React](https://lucide.dev/)** - Beautiful & consistent icons
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### Backend & Database
+- **[Supabase](https://supabase.com/)** - Backend-as-a-Service
+  - PostgreSQL database
+  - Real-time subscriptions
+  - Authentication & authorization
+  - Row Level Security (RLS)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### Authentication
+- **Supabase Auth** - Complete authentication solution
+- **OAuth Providers** - GitHub and Google integration
+- **Email Authentication** - Traditional email/password login
+- **Password Recovery** - Secure password reset flow
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### APIs & Data
+- **NASA APOD API** - Astronomy Picture of the Day data
+- **Server Actions** - Next.js server-side form handling
+- **Real-time Updates** - Live data synchronization
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+## 📁 Project Structure
 
-## Clone and run locally
+```
+app/
+├── (auth-pages)/           # Authentication routes
+│   ├── sign-in/           # Login page
+│   ├── sign-up/           # Registration page
+│   ├── forgot-password/   # Password recovery
+│   └── layout.tsx         # Auth layout
+├── auth/
+│   └── callback/          # OAuth callback handling
+├── gallery/               # APOD gallery
+│   ├── [id]/             # Individual APOD details
+│   └── page.tsx          # Gallery overview
+├── daily-facts/          # Today's APOD
+├── profile/              # User profile management
+├── wishlist/             # User's saved APODs
+├── protected/            # Protected routes
+└── about/                # About NASA page
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+components/
+├── ui/                   # shadcn/ui components
+├── gallery/              # Gallery-specific components
+├── wishlist/             # Wishlist components
+├── forum/                # Discussion components
+└── auth/                 # Authentication components
 
-2. Create a Next.js app using the Supabase Starter template npx command
+utils/
+└── supabase/             # Supabase client configuration
+```
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+## 🚀 Getting Started
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+### Prerequisites
+- Node.js 18+ 
+- npm/yarn/pnpm
+- Supabase account
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+### Installation
 
-3. Use `cd` to change into the app's directory
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd nasa-apod-gallery
+```
 
-   ```bash
-   cd with-supabase-app
-   ```
+2. **Install dependencies**
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
 
-4. Rename `.env.example` to `.env.local` and update the following:
+3. **Environment Setup**
+Create a `.env.local` file:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+4. **Database Setup**
+Set up your Supabase database with the following tables:
+- `profile` - User profiles
+- `apod_entry` - NASA APOD entries
+- `apod_to_profile` - Wishlist relationships
+- `messages` - Forum discussions
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+5. **Run the development server**
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
 
-5. You can now run the Next.js local development server:
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-   ```bash
-   npm run dev
-   ```
+## 📊 Database Schema
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+### Tables
+- **profile** - User profile information
+- **apod_entry** - NASA APOD data (title, date, explanation, URLs)
+- **apod_to_profile** - Many-to-many relationship for wishlist
+- **messages** - Forum messages for APOD discussions
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+### Key Features
+- Row Level Security (RLS) enabled
+- Real-time subscriptions for live updates
+- Optimized queries with proper indexing
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+## 🔧 Configuration
 
-## Feedback and issues
+### Supabase Setup
+1. Create a new Supabase project
+2. Configure authentication providers (GitHub, Google)
+3. Set up database tables and RLS policies
+4. Configure email templates for password recovery
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+### NASA API Integration
+The application fetches APOD data and stores it in the database for optimal performance and offline browsing.
 
-## More Supabase examples
+## 🌟 Key Features Implementation
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+### Authentication Flow
+- Server-side authentication with Supabase
+- Automatic profile creation on OAuth signup
+- Protected routes with middleware
+- Session management and refresh tokens
+
+### Real-time Features
+- Live discussion updates using Supabase real-time
+- Instant wishlist synchronization
+- Real-time user presence indicators
+
+### Performance Optimizations
+- Image lazy loading and optimization
+- Server-side rendering for SEO
+- Efficient database queries
+- Caching strategies for static content
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- **NASA** for providing the amazing APOD API
+- **Supabase** for the excellent backend infrastructure
+- **Next.js team** for the fantastic React framework
+- **Tailwind CSS** for the utility-first CSS framework
+
+## 📞 Support
+
+For support, please open an issue in the GitHub repository or contact the development team.
+
+
+
+**Built with ❤️ by Olfat & Wedanta**
