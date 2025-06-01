@@ -1,7 +1,7 @@
 // components/layout/navbar-client-auth.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Rocket, User, LogOut, Settings, Heart } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
@@ -86,7 +86,7 @@ const NavbarClientAuth: React.FC = () => {
 
   useEffect(() => {
     getUser();
-    
+
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('NavbarAuth: Auth state changed:', event, session?.user ? 'User logged in' : 'No user');
