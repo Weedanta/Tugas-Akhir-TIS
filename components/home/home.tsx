@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, useInView, useAnimation } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
   Rocket, 
