@@ -38,13 +38,13 @@ export { ThemeSwitcher } from '@/components/theme-switcher';
 export { default as Hero } from '@/components/hero';
 
 // Tutorial Components - These are being used in the tutorial pages
-export { default as ConnectSupabaseSteps } from '@/components/tutorial/connect-supabase-steps';
-export { default as SignUpUserSteps } from '@/components/tutorial/sign-up-user-steps';
-export { default as FetchDataSteps } from '@/components/tutorial/fetch-data-steps';
+// export { default as ConnectSupabaseSteps } from '@/components/tutorial/connect-supabase-steps';
+// export { default as SignUpUserSteps } from '@/components/tutorial/sign-up-user-steps';
+// export { default as FetchDataSteps } from '@/components/tutorial/fetch-data-steps';
 
 // Tutorial components with named exports
-export * from '@/components/tutorial/code-block';
-export * from '@/components/tutorial/tutorial-step';
+// export * from '@/components/tutorial/code-block';
+// export * from '@/components/tutorial/tutorial-step';
 
 // UI Components
 export * from '@/components/ui/badge';
